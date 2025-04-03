@@ -1,0 +1,21 @@
+services:
+  - type: web # Specifies this is a web service
+    name: house-price-predictor-flask # MUST match the service name you chose on Render
+    env: python # Use the Python environment
+    repo: https://github.com/sahilsghadg/house-price-predictor-flask.git # Your GitHub repo URL
+    branch: main # Or your default branch
+    plan: free # Or your chosen plan
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    envVars: # Optional: Add any environment variables needed by your app
+      - key: PYTHON_VERSION # Example: Specify Python version if needed
+        value: 3.9.16 # Use a version supported by Render & your packages
+      # - key: FLASK_DEBUG # Control debug mode via environment variable
+      #   value: 0 # Set to 0 for production
+    # ****** Add System Dependencies Here ******
+    build:
+      packages:
+        - build-essential # Installs C/C++ compilers (gcc, g++, make)
+        - python3-dev     # Installs Python header files needed for C extensions
+        - libblas-dev     # Needed for NumPy/SciPy linear algebra
+        - liblapack-dev   # Needed for NumPy/SciPy linear algebra

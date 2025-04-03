@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Predictor</title>
+    <style>
+        /* ... (keep existing styles) ... */
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>🏠 House Price Predictor</h1>
+    </div>
+
+    <div class="container">
+        <h2>Enter House Details</h2>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              {% set category = category if category == 'error' else 'warning' %}
+              <div class="flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form action="/predict" method="post">
+            <div class="grid-container">
+                <div class="grid-item">
+                    <label for="area">Area (in sqft):</label>
+                    <!-- ****** FIX 2: Change request.form.area to request.area ****** -->
+                    <input type="number" id="area" name="area" value="{{ request.area if request else 5000 }}" min="1000" max="20000" step="50" required>
+                </div>
+                <div class="grid-item">
+                    <label for="bedrooms">Bedrooms:</label>
+                    <!-- ****** FIX 2: Change request.form.bedrooms to request.bedrooms ****** -->
+                    <input type="number" id="bedrooms" name="bedrooms" value="{{ request.bedrooms if request else 3 }}" min="1" max="6" step="1" required>
+                </div>
+                 <div class="grid-item">
+                    <label for="bathrooms">Bathrooms:</label>
+                    <!-- ****** FIX 2: Change request.form.bathrooms to request.bathrooms ****** -->
+                    <input type="number" id="bathrooms" name="bathrooms" value="{{ request.bathrooms if request else 2 }}" min="1" max="4" step="1" required>
+                </div>
+                 <div class="grid-item">
+                    <label for="stories">Stories (Floors):</label>
+                    <!-- ****** FIX 2: Change request.form.stories to request.stories ****** -->
+                    <input type="number" id="stories" name="stories" value="{{ request.stories if request else 2 }}" min="1" max="4" step="1" required>
+                </div>
+                 <div class="grid-item">
+                    <label for="parking">Parking Spaces:</label>
+                    <!-- ****** FIX 2: Change request.form.parking to request.parking ****** -->
+                    <input type="number" id="parking" name="parking" value="{{ request.parking if request else 1 }}" min="0" max="4" step="1" required>
+                </div>
+
+                 <div class="grid-item">
+                    <label for="mainroad">Main Road Access:</label>
+                    <!-- ****** FIX 2: Change request.form.mainroad to request.mainroad (applies to selected check) ****** -->
+                    <select id="mainroad" name="mainroad">
+                        <option value="yes" {% if request and request.mainroad == 'yes' %}selected{% elif not request %}selected{% endif %}>Yes</option>
+                        <option value="no" {% if request and request.mainroad == 'no' %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                 <div class="grid-item">
+                    <label for="guestroom">Guest Room Available:</label>
+                    <!-- ****** FIX 2: Change request.form.guestroom to request.guestroom ****** -->
+                    <select id="guestroom" name="guestroom">
+                        <option value="yes" {% if request and request.guestroom == 'yes' %}selected{% endif %}>Yes</option>
+                        <option value="no" {% if request and request.guestroom == 'no' %}selected{% elif not request %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                 <div class="grid-item">
+                    <label for="basement">Basement Available:</label>
+                    <!-- ****** FIX 2: Change request.form.basement to request.basement ****** -->
+                    <select id="basement" name="basement">
+                         <option value="yes" {% if request and request.basement == 'yes' %}selected{% endif %}>Yes</option>
+                        <option value="no" {% if request and request.basement == 'no' %}selected{% elif not request %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                 <div class="grid-item">
+                    <label for="hotwaterheating">Hot Water Heating:</label>
+                    <!-- ****** FIX 2: Change request.form.hotwaterheating to request.hotwaterheating ****** -->
+                    <select id="hotwaterheating" name="hotwaterheating">
+                        <option value="yes" {% if request and request.hotwaterheating == 'yes' %}selected{% endif %}>Yes</option>
+                        <option value="no" {% if request and request.hotwaterheating == 'no' %}selected{% elif not request %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                 <div class="grid-item">
+                    <label for="airconditioning">Air Conditioning:</label>
+                    <!-- ****** FIX 2: Change request.form.airconditioning to request.airconditioning ****** -->
+                    <select id="airconditioning" name="airconditioning">
+                        <option value="yes" {% if request and request.airconditioning == 'yes' %}selected{% elif not request %}selected{% endif %}>Yes</option>
+                        <option value="no" {% if request and request.airconditioning == 'no' %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                 <div class="grid-item">
+                    <label for="prefarea">Located in Preferred Area:</label>
+                    <!-- ****** FIX 2: Change request.form.prefarea to request.prefarea ****** -->
+                    <select id="prefarea" name="prefarea">
+                         <option value="yes" {% if request and request.prefarea == 'yes' %}selected{% endif %}>Yes</option>
+                        <option value="no" {% if request and request.prefarea == 'no' %}selected{% elif not request %}selected{% endif %}>No</option>
+                    </select>
+                </div>
+                 <div class="grid-item">
+                    <label for="furnishingstatus">Furnishing Status:</label>
+                     <!-- ****** FIX 2: Change request.form.furnishingstatus to request.furnishingstatus ****** -->
+                    <select id="furnishingstatus" name="furnishingstatus">
+                        <option value="furnished" {% if request and request.furnishingstatus == 'furnished' %}selected{% endif %}>Furnished</option>
+                        <option value="semi-furnished" {% if request and request.furnishingstatus == 'semi-furnished' %}selected{% elif not request %}selected{% endif %}>Semi-furnished</option>
+                        <option value="unfurnished" {% if request and request.furnishingstatus == 'unfurnished' %}selected{% endif %}>Unfurnished</option>
+                    </select>
+                </div>
+            </div> <!-- End Grid Container -->
+
+            <input type="submit" value="Predict Price">
+        </form>
+
+        <!-- Display prediction result here -->
+        {% if prediction_text %}
+        <hr>
+        <div class="prediction-box">
+            {{ prediction_text }}
+        </div>
+        {% endif %}
+
+    </div>
+
+    <footer>
+        <p>House Price Predictor - Flask Demo</p>
+    </footer>
+</body>
+</html>

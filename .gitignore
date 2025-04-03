@@ -1,0 +1,22 @@
+# Python virtual environment
+venv/
+env/
+*/venv/
+*/env/
+.venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE files (PyCharm example)
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Add any other files you want to ignore (e.g., large datasets if not needed for deployment)
+# Housing.csv # <-- Optional: Uncomment this if Housing.csv is very large AND not needed by the *running* app

@@ -1,21 +1,24 @@
 services:
-  - type: web # Specifies this is a web service
-    name: house-price-predictor-flask # MUST match the service name you chose on Render
-    env: python # Use the Python environment
-    repo: https://github.com/sahilsghadg/house-price-predictor-flask.git # Your GitHub repo URL
-    branch: main # Or your default branch
-    plan: free # Or your chosen plan
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:app"
-    envVars: # Optional: Add any environment variables needed by your app
-      - key: PYTHON_VERSION # Example: Specify Python version if needed
-        value: 3.9.16 # Use a version supported by Render & your packages
-      # - key: FLASK_DEBUG # Control debug mode via environment variable
-      #   value: 0 # Set to 0 for production
-    # ****** Add System Dependencies Here ******
-    build:
+  - type: web        # Type of service
+    name: house-price-predictor-flask # <<< MUST match your Render service name
+    env: python      # Environment runtime
+    repo: https://github.com/sahilsghadg/house-price-predictor-flask.git # <<< Your GitHub repo URL
+    branch: main     # Your deployment branch
+    plan: free       # Render plan (adjust if different)
+    build: # Section for build configuration
+      # ****** System packages to install BEFORE pip install ******
       packages:
-        - build-essential # Installs C/C++ compilers (gcc, g++, make)
-        - python3-dev     # Installs Python header files needed for C extensions
-        - libblas-dev     # Needed for NumPy/SciPy linear algebra
-        - liblapack-dev   # Needed for NumPy/SciPy linear algebra
+        - build-essential
+        - python3-dev
+        - libblas-dev
+        - liblapack-dev
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt" # Ensure pip is updated first
+    startCommand: "gunicorn app:app"
+    # Optional: Specify Python version if needed by your dependencies
+    # pythonVersion: "3.9" # Example
+    # Optional: Environment variables
+    # envVars:
+    #  - key: PYTHON_VERSION
+    #    value: 3.9.16
+    #  - key: FLASK_DEBUG
+    #    value: 0 # Set to 0 for production
